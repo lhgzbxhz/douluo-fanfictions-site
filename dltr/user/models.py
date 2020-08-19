@@ -4,7 +4,7 @@ from django.db import models
 
 
 class User(models.Model):
-    uuid = models.UUIDField(primary_key=True)
+    uuid = models.CharField(primary_key=True, max_length=20)
     user_name = models.CharField(max_length=20)
     phone_number = models.CharField(max_length=20, null=True)
     email = models.EmailField(null=True)
