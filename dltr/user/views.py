@@ -1,6 +1,6 @@
 from urllib.parse import quote
 
-from django.shortcuts import render, reverse
+from django.shortcuts import render, reverse, redirect
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 
 from . import models
@@ -13,9 +13,10 @@ from .util import *
 def callback(request):
     authorization_code = request.GET.get("code")
     if authorization_code:
-        token = get_access_token(authorization_code)
+        token = get_token_dict(authorization_code)
+        token = token.get("access_token")
         request.session["token"] = token
-        return HttpResponseRedirect(reverse("signin"))
+        return redirect("signin")
     else:
         return HttpResponseNotFound()
 
@@ -28,7 +29,7 @@ def sign_in(request):
             'token': token,
         })
     else:
-        return HttpResponseRedirect(get_authorization_code_url(
+        return redirect(get_authorization_code_url(
             callback_uri=quote("http://127.0.0.1:8000/user/callback")))
 
 
