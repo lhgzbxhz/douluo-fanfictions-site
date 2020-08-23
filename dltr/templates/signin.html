@@ -4,12 +4,43 @@
 
 {% block body %}
     <form class="layui-form" action="?">
-        开发中......
-        <p>你的token是：{{ token }}</p>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-block">
+                <input type="text" name="username" required lay-verify="required" placeholder="请输入用户名"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码</label>
+            <div class="layui-input-block">
+                <input type="text" name="passwd" required lay-verify="required" placeholder="请输入密码"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">重复密码</label>
+            <div class="layui-input-block">
+                <input type="text" name="rep-passwd" required lay-verify="required" placeholder="请重复密码"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">你是作家还是读者？</label>
+            <div class="layui-input-block">
+                <input type="radio" name="user-type" value="nan" title="我是作者">
+                <input type="radio" name="user-type" value="nv" title="我是读者" checked>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">注册</button>
+            </div>
+        </div>
     </form>
 
     <script>
-        layui.use('form', function() {
+        layui.use('form', function () {
             var form = layui.form;
         })
     </script>

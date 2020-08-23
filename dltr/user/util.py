@@ -3,7 +3,6 @@ from urllib.parse import quote
 
 import requests
 
-
 API_KEY = "fL6wNU5ScQ5SDFOPrWt8LEYs"
 SECRET_KEY = "BPllXcgRmuSbKUIXd7k44PuPCasI369a"
 
@@ -27,5 +26,12 @@ def get_token_dict(authorization_code) -> dict:
     }
 
     response = requests.get("https://openapi.baidu.com/oauth/2.0/token", params=data)
+    js = json.loads(response.text)
+    return js
+
+
+def get_user_info(token) -> dict:
+    data = {"access_token": token}
+    response = requests.post("https://openapi.baidu.com/rest/2.0/passport/users/getLoggedInUser", data=data)
     js = json.loads(response.text)
     return js
