@@ -31,6 +31,7 @@ def sign_in(request):
             info = get_user_info(token)
             return render(request, "signin.html", {
                 'name': info["uname"],
+                'id': info["openid"],
             })
     else:
         return redirect(get_authorization_code_url(

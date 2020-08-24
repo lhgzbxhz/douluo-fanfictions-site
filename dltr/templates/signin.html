@@ -2,46 +2,112 @@
 
 {% block title %}注册{% endblock %}
 
+{% block head %}
+    <!-- 验证码模块 -->
+    <script src="/static/verify-code.js"></script>
+{% endblock %}
+
 {% block body %}
-    <form class="layui-form" action="?">
-        <div class="layui-form-item">
-            <label class="layui-form-label">用户名</label>
-            <div class="layui-input-block">
-                <input type="text" name="username" required lay-verify="required" placeholder="请输入用户名"
-                       autocomplete="off" class="layui-input">
+    <div class="layui-main" style="padding-top: 200px;">
+        <form class="layui-form" action="?">
+            <div class="layui-form-item">
+                <label class="layui-form-label">ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="username" required lay-verify="required"
+                           autocomplete="off" class="layui-input" id="userid" disabled>
+                </div>
             </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">密码</label>
-            <div class="layui-input-block">
-                <input type="text" name="passwd" required lay-verify="required" placeholder="请输入密码"
-                       autocomplete="off" class="layui-input">
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="username" required lay-verify="required"
+                           autocomplete="off" class="layui-input" id="username" disabled>
+                </div>
             </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">重复密码</label>
-            <div class="layui-input-block">
-                <input type="text" name="rep-passwd" required lay-verify="required" placeholder="请重复密码"
-                       autocomplete="off" class="layui-input">
+            <div class="layui-form-item">
+                <label class="layui-form-label">密码</label>
+                <div class="layui-input-block">
+                    <input type="password" name="passwd" required lay-verify="pass" placeholder="请输入密码"
+                           autocomplete="off" class="layui-input" id="passwd">
+                </div>
             </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">你是作家还是读者？</label>
-            <div class="layui-input-block">
-                <input type="radio" name="user-type" value="nan" title="我是作者">
-                <input type="radio" name="user-type" value="nv" title="我是读者" checked>
+            <div class="layui-form-item">
+                <label class="layui-form-label">重复密码</label>
+                <div class="layui-input-block">
+                    <input type="password" name="rep-passwd" required lay-verify="rep_pass" placeholder="请重复密码"
+                           autocomplete="off" class="layui-input" id="rep-passwd">
+                </div>
             </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-input-block">
-                <button class="layui-btn" lay-submit lay-filter="formDemo">注册</button>
+            <div class="layui-form-item">
+                <label class="layui-form-label">验证码</label>
+                <div class="layui-input-block" style="white-space:nowrap;">
+                    <input type="text" name="verify-code" required lay-verify="verify_code"
+                           placeholder="请输入验证码（不区分大小写）" autocomplete="off" class="layui-input"
+                           id="verify-code">
+                    <img id="code" src="" alt="verify code">
+
+                </div>
             </div>
-        </div>
-    </form>
+            <div class="layui-form-item">
+                <label class="layui-form-label">您是作家还是读者？</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="user-type" value="作者" title="我是作者">
+                    <input type="radio" name="user-type" value="读者" title="我是读者" checked>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">注册</button>
+                </div>
+            </div>
+        </form>
+    </div>
 
     <script>
-        layui.use('form', function () {
+        layui.use(['form'], function () {
             var form = layui.form;
+
+            let code = '';
+
+            // 设置验证码函数
+            function setVerifyCode() {
+                let res = verifyCode();
+                $("#code").attr("src", res.dataURL);
+                code = res.code.toLocaleUpperCase();
+            }
+
+            form.verify({
+                pass: function (value, item) {
+                    // 密码必须在6至16位之间
+                    if (value.length < 6 || value.length > 16) {
+                        return "密码必须在6至16位之间";
+                    } else if (!new RegExp("^[a-zA-Z0-9_]").test(value)) {
+                        return "密码只能包含数字、字母、下划线";
+                    } else if (/^\d+\d+\d$/.test(value)) {
+                        return "用户名不能全为数字";
+                    }
+                },
+                rep_pass: function (value, item) {
+                    // 重复密码不同
+                    if (value !== $("#passwd").val()) {
+                        return "密码与重复密码不同";
+                    }
+                },
+                verify_code: function (value, item) {
+                    if (value.toLocaleUpperCase() !== code) {
+                        setVerifyCode();
+                        return "验证码不正确";
+                    }
+                },
+            })
+
+            $(document).ready(function () {
+                $("#username").val("{{ name }}");
+                $("#userid").val("{{ id }}");
+                setVerifyCode();
+            })
+
+            //form.render();
         })
     </script>
 {% endblock %}
