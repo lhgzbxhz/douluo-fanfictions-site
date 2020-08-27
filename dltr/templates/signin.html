@@ -9,43 +9,38 @@
 
 {% block body %}
     <div class="layui-main" style="padding-top: 200px;">
-        <form class="layui-form" action="?">
-            <div class="layui-form-item">
-                <label class="layui-form-label">ID</label>
-                <div class="layui-input-block">
-                    <input type="text" name="username" required lay-verify="required"
-                           autocomplete="off" class="layui-input" id="userid" disabled>
-                </div>
-            </div>
+        <form class="layui-form" action="?" method="post">
+            {% csrf_token %}
             <div class="layui-form-item">
                 <label class="layui-form-label">用户名</label>
                 <div class="layui-input-block">
-                    <input type="text" name="username" required lay-verify="required"
+                    <input type="text" name="user_name" required lay-verify="required"
                            autocomplete="off" class="layui-input" id="username" disabled>
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">密码</label>
                 <div class="layui-input-block">
-                    <input type="password" name="passwd" required lay-verify="pass" placeholder="请输入密码"
+                    <input type="password" name="password" required lay-verify="pass" placeholder="请输入密码"
                            autocomplete="off" class="layui-input" id="passwd">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">重复密码</label>
                 <div class="layui-input-block">
-                    <input type="password" name="rep-passwd" required lay-verify="rep_pass" placeholder="请重复密码"
+                    <input type="password" name="rep-password" required lay-verify="rep_pass" placeholder="请重复密码"
                            autocomplete="off" class="layui-input" id="rep-passwd">
                 </div>
             </div>
             <div class="layui-form-item">
                 <label class="layui-form-label">验证码</label>
                 <div class="layui-input-block" style="white-space:nowrap;">
+                    <img id="code" src="" alt="verify code">
+                    <button type="button" class="layui-btn layui-btn-sm layui-btn-radius layui-btn-normal"
+                        id="set-verify">换一个验证码</button>
                     <input type="text" name="verify-code" required lay-verify="verify_code"
                            placeholder="请输入验证码（不区分大小写）" autocomplete="off" class="layui-input"
-                           id="verify-code">
-                    <img id="code" src="" alt="verify code">
-
+                           id="verify-code" style="display: inline">
                 </div>
             </div>
             <div class="layui-form-item">
@@ -103,8 +98,9 @@
 
             $(document).ready(function () {
                 $("#username").val("{{ name }}");
-                $("#userid").val("{{ id }}");
                 setVerifyCode();
+                $("#set-verify").click(setVerifyCode);
+                $("#code").click(setVerifyCode);
             })
 
             //form.render();

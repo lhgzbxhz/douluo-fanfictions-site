@@ -3,8 +3,8 @@ from urllib.parse import quote
 from django.shortcuts import render, reverse, redirect
 from django.http import HttpResponseNotFound, HttpResponseRedirect
 
-from . import models
-from .util import *
+from user import models
+from user.util import *
 
 
 # Create your views here.
@@ -25,21 +25,32 @@ def sign_in(request):
     # 获取token
     token = request.session.get("token")
     if token:
+        info = get_user_info(token)
         if request.method == 'POST':
-            pass
+            # 存入数据库
+            user = models.User(password=request.POST["password"][0])
+            user.uid = info["openid"]
+            user.user_name = info["uname"]
+            user.portrait = info["portrait"]
+            user.is_writer = (request.POST["user-type"][0] == '作者')
+            user.access_token = token
+            user.refresh_token = request.session["refresh_token"]
+            user.save()
+            # 存入session
+            request.session["uid"] = user.uid
+            # 重定向
+            return redirect(reverse("user_home", args=(user.uid, )))
         else:
-            info = get_user_info(token)
             return render(request, "signin.html", {
                 'name': info["uname"],
-                'id': info["openid"],
             })
     else:
         return redirect(get_authorization_code_url(
             callback_uri=quote("http://127.0.0.1:8000/user/callback")))
 
 
-def user_home(request, uuid):
-    user = models.User.objects.get(uuid__exact=uuid)
+def user_home(request, uid):
+    user = models.User.objects.get(uid__exact=uid)
     if user:
         return render(request, 'user_home.html', {
             'name': user.user_name,

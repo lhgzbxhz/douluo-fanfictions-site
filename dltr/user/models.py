@@ -5,10 +5,11 @@ from django.db import models
 
 class User(models.Model):
     """用户"""
-    uid = models.CharField(primary_key=True, max_length=20)
-    user_name = models.CharField(max_length=20)
+    uid = models.CharField(primary_key=True, max_length=50, default="")
+    user_name = models.CharField(max_length=20, default="")
     portrait = models.CharField(max_length=50, default="e2c1776c31393837313031319605")  # 默认头像
-    password = models.CharField(max_length=30, default="password")      # 以用户密码的md5值作为原值，以id作为哈希盐值
+    password = models.CharField(max_length=30, default="password")      # 用户密码的md5值
+    is_writer = models.BooleanField(default=False)
     access_token = models.CharField(max_length=100, default="")
     refresh_token = models.CharField(max_length=100, default="")
 
