@@ -26,6 +26,11 @@ def sign_in(request):
     token = request.session.get("token")
     if token:
         info = get_user_info(token)
+
+        # 用户已存在
+        if models.User.objects.get(uid__exact=info["openid"]):
+            return redirect("user_home", info["openid"])
+
         if request.method == 'POST':
             # 存入数据库
             user = models.User(password=request.POST["password"][0])
