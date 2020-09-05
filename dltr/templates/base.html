@@ -7,14 +7,31 @@
     <!-- jQuery==3.5.1 -->
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
 
-    <!-- layui==2.x -->
+    <!-- layui==2.5.6 -->
     <link rel="stylesheet" href="/static/css/layui.css">
     <script src="/static/layui.js"></script>
+
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
 
     {% block head %}{% endblock %}
 </head>
 <body>
-    {% block body %}
-    {% endblock %}
+<!-- 导航栏 -->
+<ul class="layui-nav layui-bg-cyan" lay-filter="">
+    <li class="layui-nav-item"><a href="">首页</a></li>
+    <li class="layui-nav-item"><a href="">发布小说</a></li>
+</ul>
+
+<script>
+    layui.use('element', function () {
+        var element = layui.element;
+    });
+</script>
+
+{% block body %}
+{% endblock %}
 </body>
 </html>

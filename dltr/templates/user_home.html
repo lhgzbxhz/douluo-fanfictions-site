@@ -3,5 +3,39 @@
 {% block title %}{{ name }}的主页{% endblock %}
 
 {% block body %}
-    <b>Hello, {{ name }}!</b>
+    <div class="layui-main">
+        <div class="layui-row">
+            <a href="{{ face_img_url }}" target="_blank" class="layui-col-lg6 layui-col-md6 layui-col-sm12 layui-col-xs12">
+                <img src="{{ face_img_url }}" alt="头像不见了">
+            </a>
+            <div class="layui-col-lg3 layui-col-md3 layui-col-sm4 layui-col-xs12">
+                注册日期:{{ date | date:"Y/m/d" }}
+            </div>
+            <div class="layui-col-lg3 layui-col-md3 layui-col-sm4 layui-col-xs12">
+                关注Ta的人数:{{ liked }}
+            </div>
+        </div>
+
+        <fieldset class="layui-elem-field ">
+            <legend>Ta的详细信息</legend>
+            <div class="layui-field-box layui-row">
+                <div class="layui-col-lg3 layui-col-md3 layui-col-sm4 layui-col-xs6">
+                    {# 使用图标判断性别 #}
+                    性别：
+                    {% if male %}
+                        <i class="layui-icon layui-icon-male" style="font-size: 20px; color:#01AAED;"></i>
+                    {% else %}
+                        <i class="layui-icon layui-icon-female" style="font-size: 20px; color:#ff5722;"></i>
+                    {% endif %}
+                </div>
+
+                {# 使用for循环遍历info字典 #}
+                {% for key,value in info.items %}
+                    <p class="layui-col-lg3 layui-col-md3 layui-col-sm4 layui-col-xs6">
+                        {{ key }}：{{ value }}
+                    </p>
+                {% endfor %}
+            </div>
+        </fieldset>
+    </div>
 {% endblock %}

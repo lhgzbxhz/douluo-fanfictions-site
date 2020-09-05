@@ -1,4 +1,6 @@
 from urllib.parse import quote
+from datetime import date
+from hashlib import md5
 
 from django.shortcuts import render, reverse, redirect
 from django.http import HttpResponseNotFound, HttpResponseRedirect
@@ -33,7 +35,7 @@ def sign_in(request):
 
         if request.method == 'POST':
             # 存入数据库
-            user = models.User(password=request.POST["password"][0])
+            user = models.User(password=md5(request.POST["password"][0]).hexdigest())
             user.uid = info["openid"]
             user.user_name = info["uname"]
             user.portrait = info["portrait"]
@@ -59,6 +61,15 @@ def user_home(request, uid):
     if user:
         return render(request, 'user_home.html', {
             'name': user.user_name,
+            'liked': 100,
+            'face_img_url': user.get_large_face_image_url(),
+            'date': date(2020, 8, 22),
+            'male': True,
+            'info': {
+                '爱好': '吃',
+                'test1': 't',
+                'test2': 'e',
+            },
         })
     else:
         return HttpResponseNotFound()
