@@ -5,19 +5,33 @@
 {% block head %}
     <!-- 验证码模块 -->
     <script src="/static/verify-code.js"></script>
+    <!-- 去除html标签函数 -->
+    <script src="/static/filterHtml.js"></script>
+
+    <style>
+        form {
+            width: 55%;       /* 太宽了不好看 */
+            padding-top: 10%; /* 顶着头不好看 */
+        }
+
+        div.django-ckeditor-widget {
+            width: 120%;   /* 为了使工具栏不变成两行 */
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
-    <div class="layui-main" style="padding-top: 200px;">
-        <form class="layui-form" action="?" method="post">
+    <div class="layui-main">
+        <form class="layui-form layui-form-pane" action="?" method="post">
             {% csrf_token %}
             <div class="layui-form-item">
                 <label class="layui-form-label">用户名</label>
                 <div class="layui-input-block">
-                    <input type="text" name="user_name" required lay-verify="required"
-                           autocomplete="off" class="layui-input" id="username" disabled>
+                    <input type="text" name="uname" required lay-verify="required"
+                           autocomplete="off" class="layui-input layui-disabled" id="username">
                 </div>
             </div>
+
             <div class="layui-form-item">
                 <label class="layui-form-label">密码</label>
                 <div class="layui-input-block">
@@ -25,6 +39,7 @@
                            autocomplete="off" class="layui-input" id="passwd">
                 </div>
             </div>
+
             <div class="layui-form-item">
                 <label class="layui-form-label">重复密码</label>
                 <div class="layui-input-block">
@@ -32,24 +47,38 @@
                            autocomplete="off" class="layui-input" id="rep-passwd">
                 </div>
             </div>
+
             <div class="layui-form-item">
                 <label class="layui-form-label">验证码</label>
                 <div class="layui-input-block" style="white-space:nowrap;">
                     <img id="code" src="" alt="verify code">
                     <button type="button" class="layui-btn layui-btn-sm layui-btn-radius layui-btn-normal"
-                        id="set-verify">换一个验证码</button>
+                            id="set-verify">换一个验证码
+                    </button>
                     <input type="text" name="verify-code" required lay-verify="verify_code"
                            placeholder="请输入验证码（不区分大小写）" autocomplete="off" class="layui-input"
                            id="verify-code" style="display: inline">
                 </div>
             </div>
+
             <div class="layui-form-item">
-                <label class="layui-form-label">您是作家还是读者？</label>
+                <label class="layui-form-label" style="width: 120px;"><!-- width属性是为了让文字完全显示出来 -->
+                    您是作家吗？</label>
                 <div class="layui-input-block">
                     <input type="radio" name="user-type" value="作者" title="我是作者">
                     <input type="radio" name="user-type" value="读者" title="我是读者" checked>
                 </div>
             </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label" style="height: 43px;"><!-- height属性是为了让layui的方框风格与ckeditor的自适应匹配 -->
+                    请输入简介</label>
+                <div lay-ignore>
+                    {{ form.media }}
+                    {{ form.brief }}
+                </div>
+            </div>
+
             <div class="layui-form-item">
                 <div class="layui-input-block">
                     <button class="layui-btn" lay-submit lay-filter="formDemo">注册</button>
@@ -71,10 +100,13 @@
                 code = res.code.toLocaleUpperCase();
             }
 
+            // 设置layui验证
+            $("#id_text").attr('lay-verify', 'brief');
+
             form.verify({
                 pass: function (value, item) {
-                    // 密码必须在6至16位之间
                     if (value.length < 6 || value.length > 16) {
+                        // 密码必须在6至16位之间
                         return "密码必须在6至16位之间";
                     } else if (!new RegExp("^[a-zA-Z0-9_]").test(value)) {
                         return "密码只能包含数字、字母、下划线";
@@ -94,16 +126,31 @@
                         return "验证码不正确";
                     }
                 },
+                brief: function (value, item) {
+                    let data = CKEDITOR.instances[item.id].getData();
+                    data = filterHtml(data);
+                    if (data.length >= 300) {
+                        return "简介不得超过300字";
+                    } else if (data.length === 0) {
+                        return "简介不得为空";
+                    }
+                }
             })
 
             $(document).ready(function () {
+                // 表单初始化
                 $("#username").val("{{ name }}");
-                setVerifyCode();
+
+                // 设置验证码绑定
                 $("#set-verify").click(setVerifyCode);
                 $("#code").click(setVerifyCode);
-            })
 
-            //form.render();
+                setVerifyCode(); // 初始化验证码
+
+                // ckeditor编辑器有一个inline-block样式阻碍了自适应效果
+                // 所以需要用jquery语法将其清除掉
+                $(".django-ckeditor-widget").removeAttr('style');
+            })
         })
     </script>
 {% endblock %}

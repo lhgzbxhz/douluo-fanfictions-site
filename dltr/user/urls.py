@@ -6,7 +6,7 @@ from . import views
 
 
 urlpatterns = [
-    url(r'^signin/$', views.sign_in, name="signin"),         # 注册
-    url(r'^callback/$', views.callback, name="callback"),    # 百度回调页面
-    url(r'^(.+)/$', views.user_home, name="user_home"),      # 用户主页
+    url(r'^signin\.html/$', views.sign_in, name="signin"),         # 注册
+    url(r'^callback\.html/$', views.callback, name="callback"),    # 百度回调页面
+    url(r'^(.+)\.html/$', views.user_home, name="user_home"),      # 用户主页
 ]

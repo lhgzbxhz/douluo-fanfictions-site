@@ -14,7 +14,7 @@ class User(models.Model):
 
     uid = models.CharField(primary_key=True, max_length=50)
     uname = models.CharField(max_length=20)
-    password = models.CharField(max_length=30)  # 用户密码的md5值
+    password = models.CharField(max_length=50)  # 用户密码的md5值
     portrait = models.CharField(max_length=50, default="e2c1776c31393837313031319605")  # 默认头像
 
     info = models.JSONField()
