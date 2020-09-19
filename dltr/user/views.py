@@ -72,16 +72,7 @@ def user_home(request, uid):
     user = models.User.objects.get(uid__exact=uid)
     if user:
         return render(request, 'user_home.html', {
-            'name': user.uname,
-            'liked': 100,
-            'face_img_url': user.get_large_face_image_url(),
-            'date': date(2020, 8, 22),
-            'male': True,
-            'info': {
-                '爱好': '吃',
-                'test1': 't',
-                'test2': 'e',
-            },
+            'user': user,
         })
     else:
         return HttpResponseNotFound()

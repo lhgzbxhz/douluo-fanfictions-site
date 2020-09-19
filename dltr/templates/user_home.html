@@ -5,16 +5,22 @@
 {% block body %}
     <div class="layui-main">
         <div class="layui-row">
-            <a href="{{ face_img_url }}" target="_blank" class="layui-col-lg6 layui-col-md6 layui-col-sm12 layui-col-xs12">
-                <img src="{{ face_img_url }}" alt="头像不见了">
+            <a href="{{ user.get_large_face_image_url }}" target="_blank"
+               class="layui-col-lg6 layui-col-md6 layui-col-sm12 layui-col-xs12">
+                <img src="{{ user.get_large_face_image_url }}" alt="头像不见了">
             </a>
             <div class="layui-col-lg3 layui-col-md3 layui-col-sm4 layui-col-xs12">
-                注册日期:{{ date | date:"Y/m/d" }}
+                注册日期:{{ user.sign_in_date | date:"Y/m/d" }}
             </div>
             <div class="layui-col-lg3 layui-col-md3 layui-col-sm4 layui-col-xs12">
-                关注Ta的人数:{{ liked }}
+                关注Ta的人数:{{ user.fans }}
             </div>
         </div>
+
+        <fieldset class="layui-elem-field">
+            <legend>Ta的简介</legend>
+            {{ user.brief | safe }}
+        </fieldset>
 
         <fieldset class="layui-elem-field ">
             <legend>Ta的详细信息</legend>
@@ -22,7 +28,7 @@
                 <div class="layui-col-lg3 layui-col-md3 layui-col-sm4 layui-col-xs6">
                     {# 使用图标判断性别 #}
                     性别：
-                    {% if male %}
+                    {% if user.is_male %}
                         <i class="layui-icon layui-icon-male" style="font-size: 20px; color:#01AAED;"></i>
                     {% else %}
                         <i class="layui-icon layui-icon-female" style="font-size: 20px; color:#ff5722;"></i>
@@ -30,8 +36,8 @@
                 </div>
 
                 {# 使用for循环遍历info字典 #}
-                {% for key,value in info.items %}
-                    <p class="layui-col-lg3 layui-col-md3 layui-col-sm4 layui-col-xs6">
+                {% for key,value in user.info.items %}
+                    <p class="layui-col-lg3 layui-col-md3 layui-col-sm4 layui-col-xs6 layui-text">
                         {{ key }}：{{ value }}
                     </p>
                 {% endfor %}
