@@ -55,7 +55,7 @@ def sign_in(request):
             # 存入session
             request.session["uid"] = user.uid
             # 重定向
-            return redirect(reverse("user_home", args=(user.uid, )))
+            return redirect(reverse("user_home", args=(user.uid,)))
 
         else:
             form = UserForm()
@@ -76,3 +76,21 @@ def user_home(request, uid):
         })
     else:
         return HttpResponseNotFound()
+
+
+def rename(request):
+    uid = request.session.get("uid")
+    if not uid:
+        return HttpResponseNotFound("您尚未登录！".encode())
+
+    if request.method == 'POST':
+        user = models.User.objects.get(uid__exact=uid)
+        user.uname = request.POST["new_name"]
+        user.can_rename = False
+        user.save()
+        return redirect('user_home', uid)
+
+    else:
+        return render(request, "rename.html", {
+            'can_rename': models.User.objects.get(uid__exact=uid).can_rename,
+        })

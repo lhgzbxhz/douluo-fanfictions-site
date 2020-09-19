@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block style %}
+    <style>
+        @media screen and (max-width: 768px) {
+            /* 手机网页 */
+            form {
+                padding-left: 5%;
+                padding-right: 20%;
+                padding-top: 20%;
+            }
+        }
+
+        @media screen and (min-width: 768px) {
+            /* 电脑网页 */
+            form {
+                padding-left: 33%;
+                padding-right: 33%;
+                padding-top: 25%;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {% if can_rename %}
+
+            <form class="layui-form" action="?" method="post">
+                {% csrf_token %}
+                <div class="layui-form-item">
+                    <label class="layui-form-label">新名字：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="new_name" required lay-verify="required" placeholder="请输入"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit>立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
+
+        <script>
+            layui.use('form', function () {
+                var form = layui.form;
+            })
+        </script>
+    {% endif %}
+{% endblock %}
